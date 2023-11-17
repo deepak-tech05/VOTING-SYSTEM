@@ -37,7 +37,7 @@ contract Election {
     //Function To Check Candidate IDs
    function checkcandidateid(uint _number) private pure returns(bool){
       
-      for(uint i=1;i<5;i++){
+      for(uint i=1;i<=20;i++){
          if(_number >0 && _number <=5) return true;
       }
       return false;   
