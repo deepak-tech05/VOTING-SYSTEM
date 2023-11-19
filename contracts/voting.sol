@@ -33,13 +33,16 @@ contract Election {
       require( msg.sender == admin,"Invalid Due to Owner Is Changed");
       _;
     }
-
+   //Modifier for checking candidate Number id 
     modifier checkcandidateid(uint _numberid){
       require( msg.sender == admin,"Invalid Due to Owner Is Changed");
       require(_numberid>0 && _numberid <= 20, "Checkid");
       _;
 
     }
+
+//Function for get number of candidates
+
     function getlenght() public view returns(uint){
         return candidates.length;
     }
