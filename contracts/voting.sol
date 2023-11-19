@@ -15,7 +15,7 @@ contract Election {
     // Candidate Information
     struct Candidate {
         string party;
-        uint number;
+        uint numberid;
         uint voteCount;
     }
      // Dynamic array to store candidates
@@ -29,51 +29,48 @@ contract Election {
      }
    
    //Modifier for checking Admin is Same Or Not
-    modifier owner(){
+    modifier owner(uint _numberid){
       require( msg.sender == admin,"Invalid Due to Owner Is Changed");
       _;
     }
 
-    //Function To Check Candidate IDs
-   function checkcandidateid(uint _number) private pure returns(bool){
-         if(_number >0 && _number <=5) return true;
-         else return false;   
+    modifier checkcandidateid(uint _numberid){
+      require( msg.sender == admin,"Invalid Due to Owner Is Changed");
+      require(_numberid>0 && _numberid <= 20, "Checkid");
+      _;
 
-   }
-   function getlen() public view returns(uint){
-   return candidates.length;
-   }
-
+    }
+    function getlenght() public view returns(uint){
+        return candidates.length;
+    }
 
    // Function To check Candidate Register Only Ones
-   function  onlyonesregister(uint _number) public view returns(bool){
-        if(candidates.length < 1) {
+   function  onlyonesregister(uint _numberid) public view returns(bool){
+        if(candidates.length < 1){
          return true;
         }
      
-         uint count=0;
+         uint count=1;
         if(candidates.length >=1){   
-          for(uint i=0;i<candidates.length;i++){
-                if( candidates[i].number == _number){             // Fetching Candidate number From struct
+            for(uint i=0;i<candidates.length;i++){
+                 if( candidates[i].numberid == _numberid){             // Fetching Candidate number From struct
                      count=count+1;
-                 }
-          }
-         if(count == 1) return true;
-        }
-        
-       return false;
+                  }
+            }
+         if(count >1) return false;
+        }        
+       return true;
 
    }
-
+   
 
     // Mapping to store voter information
     mapping(address => Voter) public voters;
 
     // Candidate registration
-    function registerCandidate(string memory _name, uint _number) public owner {
-        require(checkcandidateid(_number) == true,"Invalid ID oF Candidate");
-        require(onlyonesregister(_number) == true,"Invalid Doubled Registration");
-        Candidate memory newCandidate = Candidate({party: _name, number: _number, voteCount: 0});
+    function registerCandidate(string memory _name, uint _numberid) public checkcandidateid(_numberid) {
+         require(onlyonesregister(_numberid) == true,"Invalid Doubled Registration");
+        Candidate memory newCandidate = Candidate({party: _name, numberid: _numberid, voteCount: 0});
         candidates.push(newCandidate);
 
         // Emit event for candidate registration
